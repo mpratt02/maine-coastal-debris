@@ -5,7 +5,7 @@ output: html_notebook
 
 
 ```{r importData}
-install.packages("dplyr")
+#install.packages("dplyr")
 library("dplyr")
 beach_csv <- read.csv("data/MDMAP_Export_20230827.csv")
 backbarrier_csv <- read.csv("data/MDMAP_Export_20230827_backbarrier.csv")
@@ -30,6 +30,7 @@ numeric_columns <- c(
   "total_plastic_items",
   "total_glass_items",
   "total_rubber_items",
+  "total_metal_items",
   "total_processed.lumber_items",
   "total_cloth.fabric_items",
   "total_other_items",
@@ -66,11 +67,9 @@ numeric_columns <- c(
   "other.other.asphalt", "other.other.brick", "other.other.ceramic", 
   "other.other.terracota", "other.other.wax")
 
-# Filter out columns that are not important for this exercise
-debris_data <- subset(full_table, select=valid_columns)
 
 # Merge and sum rows that have the same date and location.
-debris_by_date <- debris_data %>% group_by(
+debris_by_date <- full_table %>% group_by(
   shoreline_site_id,
   survey_date,
   shoreline_site_name,
@@ -78,9 +77,6 @@ debris_by_date <- debris_data %>% group_by(
   site_length,
   trashcans,
   number_of_recreators) %>% summarise_at(numeric_columns, sum) #, .groups='drop')
-
-# Split the Year into its own column
-
 
 write.csv(debris_by_date, "data/debris_data.csv")
 

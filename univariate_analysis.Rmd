@@ -13,6 +13,7 @@ totals_cols <- c(
   "total_plastic_items",
   "total_glass_items",
   "total_rubber_items",
+  "total_metal_items",
   "total_processed.lumber_items",
   "total_cloth.fabric_items",
   "total_other_items"
@@ -24,6 +25,7 @@ numeric_columns <- c(
   "total_plastic_items",
   "total_glass_items",
   "total_rubber_items",
+  "total_metal_items",
   "total_processed.lumber_items",
   "total_cloth.fabric_items",
   "total_other_items",
@@ -106,7 +108,7 @@ ggplot(gather(debris_df[totals_cols]), aes(value)) +
 ```{r pairwise, fig.width=10, fig.height=6}
 
 # FOR ALL DATA
-boxplot(debris_df[totals_cols])
+boxplot(debris_df[totals_cols], las=2)
 
 ```
 
@@ -160,6 +162,13 @@ ggplot(debris_df, aes(x=year, y=total_processed.lumber_items, fill=year)) +
   geom_boxplot() +
   scale_x_discrete(guide = guide_axis(angle = 90)) +
   ggtitle("Total Processed Lumber Distributions Per Year") +
+  ylab("Total Items") +
+  xlab("Year")
+
+ggplot(debris_df, aes(x=year, y=total_metal_items, fill=year)) + 
+  geom_boxplot() +
+  scale_x_discrete(guide = guide_axis(angle = 90)) +
+  ggtitle("Total Metal Distributions Per Year") +
   ylab("Total Items") +
   xlab("Year")
 ```
@@ -217,6 +226,7 @@ trimmed_data <- subset(debris_df, select=c(
   'shoreline_site_name',
   'total_glass_items',
   'total_rubber_items',
+  'total_metal_items',
   'total_processed.lumber_items',
   'total_cloth.fabric_items',
   'total_other_items'))
@@ -224,6 +234,7 @@ trimmed_data <- subset(debris_df, select=c(
 total_columns <- c('total_plastic_items',
                   'total_glass_items',
                   'total_rubber_items',
+                  'total_metal_items',
                   'total_processed.lumber_items',
                   'total_cloth.fabric_items',
                   'total_other_items')
