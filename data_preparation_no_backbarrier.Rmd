@@ -1,0 +1,83 @@
+---
+title: "NOAA Data Preparation"
+output: html_notebook
+---
+
+
+```{r importData}
+#install.packages("dplyr")
+library("dplyr")
+full_table <- read.csv("data/MDMAP_Export_20230827.csv")
+#backbarrier_csv <- read.csv("data/MDMAP_Export_20230827_backbarrier.csv")
+```
+
+
+```{r checkForDuplicatesAndSubset}
+# Merge the two CSVs and Add the debris totals.
+#full_table <- data.frame(rbind(beach_csv, backbarrier_csv))
+
+valid_columns <- c(
+  "shoreline_site_id",
+  "survey_date",
+  "shoreline_site_name",
+  "transect_width",
+  "site_length",
+  "trashcans",
+  "number_of_recreators")
+
+numeric_columns <- c(
+  "total_debris_items",
+  "total_plastic_items",
+  "total_glass_items",
+  "total_rubber_items",
+  "total_metal_items",
+  "total_processed.lumber_items",
+  "total_cloth.fabric_items",
+  "total_other_items",
+  "plastic.fragments.film", "plastic.fragments.foamed", "plastic.fragments.hard", 
+  "plastic.bags", "plastic.beverage.bottles", "plastic.bottle.or.container.caps", 
+  "plastic.cups", "plastic.food.wrappers", "plastic.other.jugs.or.containers", 
+  "plastic.straws", "plastic.utensils", "plastic.6.pack.rings", 
+  "plastic.cigar.tips", "plastic.cigarettes", "plastic.disposable.cigarette.lighters", 
+  "plastic.buoys.and.floats", "plastic.fishing.lures.and.line", 
+  "plastic.rope.and.nets", "plastic.balloons", "plastic.personal.care.products", 
+  "plastic.shotgun.shells.wads", "plastic.other", "metal.fragments", 
+  "metal.aerosol.cans", "metal.aluminum.tin.cans", "metal.other", 
+  "glass.fragments", "glass.beverage.bottles", "glass.jars", "glass.other",
+  "rubber.fragments", "rubber.balloons", "rubber.flip.flops", "rubber.gloves", 
+  "rubber.tires", "rubber.other",
+  "processed.lumber.building.material", "processed.lumber.paper.and.cardboard", 
+  "processed.lumber.bags", "processed.lumber.other", "cloth.fabric.fragments", 
+  "cloth.fabric.clothing.and.shoes", "cloth.fabric.face.masks", 
+  "cloth.fabric.gloves", "cloth.fabric.rope.and.nets", "cloth.fabric.towels.rags", 
+  "cloth.fabric.other", "other.other", "plastic.other.jugs.or.containers.bait.containers.lids", 
+  "plastic.rope.and.nets.yellow.poly.rope.snippets", "plastic.personal.care.products.combs.or.brushes", 
+  "plastic.personal.care.products.syringes", "plastic.personal.care.products.toothbrushes", 
+  "plastic.other.crab.buoy.tag", "plastic.other.fireworks", "plastic.other.golf.balls.and.tees", 
+  "plastic.other.hagfish.trap.cones", "plastic.other.irrigation.parts", 
+  "plastic.other.light.sticks", "plastic.other.mesh.bait.bags", 
+  "plastic.other.oyster.spacers", "plastic.other.oyster.spacers...oyster.bags", 
+  "plastic.other.packing.bands", "plastic.other.pens...pen.caps", 
+  "plastic.other.plant.pot.or.trays", "plastic.other.ribbon", "plastic.other.toys", 
+  "plastic.other.zipties", "metal.other.construction.material", 
+  "metal.other.metal.bottle.caps", "metal.other.propane.canisters", 
+  "glass.other.light.bulbs", "rubber.other.lobster.claw.rubber.bands", 
+  "rubber.other.rubber.straps", "processed.lumber.paper.and.cardboard.fireworks", 
+  "processed.lumber.other.creosote.treated.lumber", "cloth.fabric.other.carpet", 
+  "other.other.asphalt", "other.other.brick", "other.other.ceramic", 
+  "other.other.terracota", "other.other.wax")
+
+
+# Merge and sum rows that have the same date and location.
+debris_by_date <- full_table %>% group_by(
+  shoreline_site_id,
+  survey_date,
+  shoreline_site_name,
+  transect_width,
+  site_length,
+  trashcans,
+  number_of_recreators) %>% summarise_at(numeric_columns, sum) #, .groups='drop')
+
+write.csv(debris_by_date, "data/debris_data_no_backbarrier.csv")
+
+```
