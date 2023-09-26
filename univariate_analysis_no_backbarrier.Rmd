@@ -241,8 +241,8 @@ total_columns <- c('total_plastic_items',
 sum_df <- trimmed_data %>% group_by(shoreline_site_name) %>% summarise_at(total_columns, sum)
 sum_df <- sum_df[order(sum_df$total_plastic_items),]
 sum_df$shoreline_site_name <- factor(sum_df$shoreline_site_name, levels=rev(c(
-  'Freddy Beach', 'Old Orchard Beach South of Pier ', 'The Creek Ocean Park', 'Ocean Park ',
-  'Kinney Shores Beach ', 'Old Orchard Beach', 'Ogunquit Beach', 'Drakes Island Beach', 'Goochs Beach, Kennebunk')))
+  'Freddy Beach', 'Old Orchard Beach South of Pier ', 'The Creek Ocean Park',
+  'Kinney Shores Beach ', 'Old Orchard Beach',  'Ocean Park ', 'Ogunquit Beach', 'Drakes Island Beach', 'Goochs Beach, Kennebunk')))
 
 sum_df |> pivot_longer(-shoreline_site_name) |> ggplot(aes(x=shoreline_site_name, y=value, fill=name)) +
   geom_bar(position="stack", stat="identity") + coord_flip() + 
